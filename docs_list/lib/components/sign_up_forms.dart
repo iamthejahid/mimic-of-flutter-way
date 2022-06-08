@@ -11,56 +11,71 @@ class SignUpForm extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Form(
-        key: formKey,
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const TextFieldNamed(
-                text: "User Name",
+      key: formKey,
+      child: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const TextFieldNamed(
+              text: "User Name",
+            ),
+            TextFormField(
+              decoration: const InputDecoration(
+                hintText: "test",
               ),
-              TextFormField(
-                decoration: const InputDecoration(
-                  hintText: "test",
-                ),
-                validator: RequiredValidator(
-                  errorText: "Username is required",
-                ),
+              validator: RequiredValidator(
+                errorText: "Username is required",
               ),
-              const SizedBox(height: defaultPadding),
-              const TextFieldNamed(
-                text: "Email",
+            ),
+            const SizedBox(height: defaultPadding),
+            const TextFieldNamed(
+              text: "Email",
+            ),
+            TextFormField(
+              keyboardType: TextInputType.emailAddress,
+              decoration: const InputDecoration(hintText: "test@gmail.com "),
+              validator: EmailValidator(
+                errorText: "Email is required",
               ),
-              TextFormField(
-                keyboardType: TextInputType.emailAddress,
-                decoration: const InputDecoration(hintText: "test@gmail.com "),
+            ),
+            const SizedBox(height: defaultPadding),
+            const TextFieldNamed(
+              text: "Phone",
+            ),
+            TextFormField(
+              keyboardType: TextInputType.phone,
+              decoration: const InputDecoration(hintText: "+123456578"),
+              validator: RequiredValidator(
+                errorText: "Phone Number is required",
               ),
-              const SizedBox(height: defaultPadding),
-              const TextFieldNamed(
-                text: "Phone",
+            ),
+            const SizedBox(height: defaultPadding),
+            const TextFieldNamed(
+              text: "Password",
+            ),
+            TextFormField(
+              obscureText: true,
+              decoration: const InputDecoration(hintText: "******"),
+              validator: RequiredValidator(
+                errorText: "Password is required",
+                // I am skipping password validation steps
               ),
-              TextFormField(
-                keyboardType: TextInputType.phone,
-                decoration: const InputDecoration(hintText: "+123456578"),
+            ),
+            const SizedBox(height: defaultPadding),
+            const TextFieldNamed(
+              text: "Confirm Password",
+            ),
+            TextFormField(
+              obscureText: true,
+              decoration: const InputDecoration(hintText: "******"),
+              validator: RequiredValidator(
+                errorText: "Password is required",
+                // I am skipping password validation steps
               ),
-              const SizedBox(height: defaultPadding),
-              const TextFieldNamed(
-                text: "Password",
-              ),
-              TextFormField(
-                obscureText: true,
-                decoration: const InputDecoration(hintText: "******"),
-              ),
-              const SizedBox(height: defaultPadding),
-              const TextFieldNamed(
-                text: "Confirm Password",
-              ),
-              TextFormField(
-                obscureText: true,
-                decoration: const InputDecoration(hintText: "******"),
-              )
-            ],
-          ),
-        ));
+            )
+          ],
+        ),
+      ),
+    );
   }
 }
