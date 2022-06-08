@@ -16,10 +16,21 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
-          primarySwatch: Colors.blue,
-          elevatedButtonTheme: ElevatedButtonThemeData(
-              style: TextButton.styleFrom(
-                  padding: const EdgeInsets.all(defaultPadding)))),
+        primarySwatch: Colors.blue,
+        primaryColor: primaryColor,
+        textTheme: Theme.of(context).textTheme.apply(displayColor: textColor),
+        elevatedButtonTheme: ElevatedButtonThemeData(
+          style: TextButton.styleFrom(
+            backgroundColor: primaryColor,
+            padding: const EdgeInsets.all(defaultPadding),
+          ),
+        ),
+        inputDecorationTheme: InputDecorationTheme(
+          border: textFormFieldBorder,
+          enabledBorder: textFormFieldBorder,
+          focusedBorder: textFormFieldBorder,
+        ),
+      ),
       home: const WelcomeScreen(),
     );
   }

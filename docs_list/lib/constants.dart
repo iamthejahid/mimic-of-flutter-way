@@ -10,7 +10,7 @@ const backGroundColor = Color(0xFFe6eff9);
 
 const redColor = Color(0xFFE85050);
 
-OutlineInputBorder textFormField = OutlineInputBorder(
+OutlineInputBorder textFormFieldBorder = OutlineInputBorder(
   borderSide: BorderSide(
     color: primaryColor.withOpacity(0.1),
   ),
