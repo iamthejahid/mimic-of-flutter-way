@@ -42,14 +42,14 @@ class HomeScreen extends StatelessWidget {
                       ),
                     ),
                     Positioned(
-                      top: constrains.maxWidth * 0.05,
+                      top: constrains.maxWidth * 0.25,
                       child: DoorLock(
                         isLocked: _controller.isTopDoorlocked,
                         onPress: _controller.updateTopDoorLocked,
                       ),
                     ),
                     Positioned(
-                      bottom: constrains.maxWidth * 0.05,
+                      bottom: constrains.maxWidth * 0.35,
                       child: DoorLock(
                         isLocked: _controller.isBottomDoorlocked,
                         onPress: _controller.updateBottomDoorLocked,
