@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:tesla/constants/constants.dart';
+import 'package:tesla/screens/nav_t.dart';
+import 'package:tesla/componentrs/door_lock.dart';
 import 'package:tesla/controller/home_controller.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -14,6 +15,7 @@ class HomeScreen extends StatelessWidget {
         animation: _controller,
         builder: (context, snapshot) {
           return Scaffold(
+            bottomNavigationBar: const NavT(),
             body: SafeArea(
               child: LayoutBuilder(builder: (context, constrains) {
                 return Stack(
@@ -61,40 +63,5 @@ class HomeScreen extends StatelessWidget {
             ),
           );
         });
-  }
-}
-
-class DoorLock extends StatelessWidget {
-  const DoorLock({
-    Key? key,
-    required this.onPress,
-    required this.isLocked,
-  }) : super(key: key);
-
-  final VoidCallback onPress;
-  final bool isLocked;
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onPress,
-      child: AnimatedSwitcher(
-        duration: defaultDuration,
-        switchInCurve: Curves.easeInOutBack,
-        transitionBuilder: (c, a) => ScaleTransition(
-          scale: a,
-          child: c,
-        ),
-        child: isLocked
-            ? SvgPicture.asset(
-                "assets/icons/door_lock.svg",
-                key: const ValueKey("lcok"),
-              )
-            : SvgPicture.asset(
-                "assets/icons/door_unlock.svg",
-                key: const ValueKey("unlcok"),
-              ),
-      ),
-    );
   }
 }
