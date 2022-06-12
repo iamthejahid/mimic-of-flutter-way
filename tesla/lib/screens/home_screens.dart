@@ -15,7 +15,12 @@ class HomeScreen extends StatelessWidget {
         animation: _controller,
         builder: (context, snapshot) {
           return Scaffold(
-            bottomNavigationBar: const NavT(),
+            bottomNavigationBar: NavT(
+              onTap: (int index) {
+                _controller.onNaTindexChange(index);
+              },
+              selecteTab: 0,
+            ),
             body: SafeArea(
               child: LayoutBuilder(builder: (context, constrains) {
                 return Stack(
