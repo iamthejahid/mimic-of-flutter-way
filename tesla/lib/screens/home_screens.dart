@@ -1,23 +1,68 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:tesla/constants/constants.dart';
+import 'package:flutter/material.dart';
 import 'package:tesla/screens/nav_t.dart';
+import 'package:tesla/constants/constants.dart';
 import 'package:tesla/componentrs/door_lock.dart';
 import 'package:tesla/controller/home_controller.dart';
+import 'package:tesla/componentrs/battery_status.dart';
 
-class HomeScreen extends StatelessWidget {
-  HomeScreen({Key? key}) : super(key: key);
+class HomeScreen extends StatefulWidget {
+  const HomeScreen({Key? key}) : super(key: key);
 
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen>
+    with SingleTickerProviderStateMixin {
   final HomeController _controller = HomeController();
+
+  late AnimationController _batteryAnimationController;
+  late Animation<double> _animationBattery;
+  late Animation<double> _animationBatteryStatus;
+
+  void setupBatteryAnimation() {
+    _batteryAnimationController = AnimationController(
+      vsync: this,
+      duration: const Duration(
+        milliseconds: 600,
+      ),
+    );
+    _animationBattery = CurvedAnimation(
+      parent: _batteryAnimationController,
+      curve: const Interval(0.0, 0.5),
+    );
+    _animationBatteryStatus = CurvedAnimation(
+      parent: _batteryAnimationController,
+      curve: const Interval(0.6, 1),
+    );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    setupBatteryAnimation();
+  }
+
+  @override
+  void dispose() {
+    _batteryAnimationController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return AnimatedBuilder(
-        animation: _controller,
+        animation: Listenable.merge([_controller, _batteryAnimationController]),
         builder: (context, snapshot) {
           return Scaffold(
             bottomNavigationBar: NavT(
               onTap: (int index) {
+                if (index == 1) {
+                  _batteryAnimationController.forward();
+                } else if (_controller.selectedBottomTab == 1 && index != 1) {
+                  _batteryAnimationController.reverse(from: 0.7);
+                }
                 _controller.onNaTindexChange(index);
               },
               selecteTab: _controller.selectedBottomTab,
@@ -91,9 +136,24 @@ class HomeScreen extends StatelessWidget {
                         ),
                       ),
                     ),
-                    SvgPicture.asset(
-                      "assets/icons/Battery.svg",
-                      width: constrains.maxWidth * 0.4,
+
+// Battery
+
+                    Opacity(
+                      opacity: _animationBattery.value,
+                      child: SvgPicture.asset(
+                        "assets/icons/Battery.svg",
+                        width: constrains.maxWidth * 0.4,
+                      ),
+                    ),
+                    Positioned(
+                      top: 50 * (1 - _animationBatteryStatus.value),
+                      height: constrains.maxHeight,
+                      width: constrains.maxWidth,
+                      child: Opacity(
+                        opacity: _animationBatteryStatus.value,
+                        child: const BatteryStatus(),
+                      ),
                     )
                   ],
                 );
