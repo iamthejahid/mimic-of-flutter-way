@@ -28,10 +28,31 @@ class HomeScreen extends StatelessWidget {
                       ),
                     ),
                     Positioned(
+                      left: constrains.maxWidth * 0.05,
+                      child: DoorLock(
+                        isLocked: _controller.isLeftDoorlocked,
+                        onPress: _controller.updateLeftDoorLocked,
+                      ),
+                    ),
+                    Positioned(
                       right: constrains.maxWidth * 0.05,
                       child: DoorLock(
                         isLocked: _controller.isRightDoorlocked,
                         onPress: _controller.updateRightDoorLocked,
+                      ),
+                    ),
+                    Positioned(
+                      top: constrains.maxWidth * 0.05,
+                      child: DoorLock(
+                        isLocked: _controller.isTopDoorlocked,
+                        onPress: _controller.updateTopDoorLocked,
+                      ),
+                    ),
+                    Positioned(
+                      bottom: constrains.maxWidth * 0.05,
+                      child: DoorLock(
+                        isLocked: _controller.isBottomDoorlocked,
+                        onPress: _controller.updateBottomDoorLocked,
                       ),
                     ),
                   ],
