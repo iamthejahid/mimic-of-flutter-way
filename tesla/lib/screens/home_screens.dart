@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter_svg/svg.dart';
 import 'package:flutter/material.dart';
 import 'package:tesla/screens/nav_t.dart';
@@ -13,13 +15,15 @@ class HomeScreen extends StatefulWidget {
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen>
-    with SingleTickerProviderStateMixin {
+class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   final HomeController _controller = HomeController();
 
   late AnimationController _batteryAnimationController;
   late Animation<double> _animationBattery;
   late Animation<double> _animationBatteryStatus;
+
+  late AnimationController _tempController;
+  late Animation<double> _carShiftAnimation;
 
   void setupBatteryAnimation() {
     _batteryAnimationController = AnimationController(
@@ -38,22 +42,33 @@ class _HomeScreenState extends State<HomeScreen>
     );
   }
 
+  void setupTempController() {
+    _tempController = AnimationController(
+        vsync: this, duration: const Duration(milliseconds: 1500));
+    _carShiftAnimation = CurvedAnimation(
+        parent: _tempController, curve: const Interval(0.2, 0.4));
+  }
+
   @override
   void initState() {
     super.initState();
+
     setupBatteryAnimation();
+    setupTempController();
   }
 
   @override
   void dispose() {
     _batteryAnimationController.dispose();
+    _tempController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return AnimatedBuilder(
-        animation: Listenable.merge([_controller, _batteryAnimationController]),
+        animation: Listenable.merge(
+            [_controller, _batteryAnimationController, _tempController]),
         builder: (context, snapshot) {
           return Scaffold(
             bottomNavigationBar: NavT(
@@ -63,6 +78,13 @@ class _HomeScreenState extends State<HomeScreen>
                 } else if (_controller.selectedBottomTab == 1 && index != 1) {
                   _batteryAnimationController.reverse(from: 0.7);
                 }
+
+                if (index == 2) {
+                  _tempController.forward();
+                } else if (_controller.selectedBottomTab == 2 && index != 2) {
+                  _tempController.reverse(from: 0.4);
+                }
+
                 _controller.onNaTindexChange(index);
               },
               selecteTab: _controller.selectedBottomTab,
@@ -72,12 +94,21 @@ class _HomeScreenState extends State<HomeScreen>
                 return Stack(
                   alignment: Alignment.center,
                   children: [
-                    Padding(
-                      padding: EdgeInsets.symmetric(
-                          vertical: constrains.maxHeight * 0.1),
-                      child: SvgPicture.asset(
-                        "assets/icons/Car.svg",
-                        width: double.infinity,
+                    SizedBox(
+                      height: constrains.maxHeight,
+                      width: constrains.maxWidth,
+                    ),
+                    Positioned(
+                      left: constrains.maxWidth / 2 * _carShiftAnimation.value,
+                      height: constrains.maxHeight,
+                      width: constrains.maxWidth,
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(
+                            vertical: constrains.maxHeight * 0.1),
+                        child: SvgPicture.asset(
+                          "assets/icons/Car.svg",
+                          width: double.infinity,
+                        ),
                       ),
                     ),
                     AnimatedPositioned(
@@ -154,12 +185,65 @@ class _HomeScreenState extends State<HomeScreen>
                         opacity: _animationBatteryStatus.value,
                         child: const BatteryStatus(),
                       ),
-                    )
+                    ),
+
+                    // Temp
+
+                    TemptBtn(
+                      svgSrc: 'assets/icons/coolShape.svg',
+                      title: 'Cool'.toUpperCase(),
+                      isActive: _controller.isCoolSelected,
+                      onPress: _controller.thermUpdate,
+                    ),
                   ],
                 );
               }),
             ),
           );
         });
+  }
+}
+
+class TemptBtn extends StatelessWidget {
+  const TemptBtn({
+    Key? key,
+    required this.svgSrc,
+    required this.title,
+    required this.isActive,
+    required this.onPress,
+  }) : super(key: key);
+
+  final String svgSrc;
+  final String title;
+  final bool isActive;
+  final VoidCallback onPress;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onPress,
+      child: Column(
+        children: [
+          Container(
+            height: isActive ? 76 : 50,
+            width: isActive ? 76 : 50,
+            child: SvgPicture.asset(
+              svgSrc,
+              color: isActive ? primaryColor : Colors.white38,
+            ),
+          ),
+          const SizedBox(
+            height: defaultPadding / 2,
+          ),
+          Text(
+            title,
+            style: TextStyle(
+                fontSize: 16,
+                color: isActive ? primaryColor : Colors.white38,
+                fontWeight: isActive ? FontWeight.bold : FontWeight.normal),
+          ),
+        ],
+      ),
+    );
   }
 }
