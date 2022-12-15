@@ -8,6 +8,8 @@ import 'package:tesla/componentrs/door_lock.dart';
 import 'package:tesla/controller/home_controller.dart';
 import 'package:tesla/componentrs/battery_status.dart';
 
+import '../componentrs/temp_deatails.dart';
+
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
 
@@ -24,6 +26,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
   late AnimationController _tempController;
   late Animation<double> _carShiftAnimation;
+  late Animation<double> _animationShowInfo;
+  late Animation<double> _animationCoolGlow;
 
   void setupBatteryAnimation() {
     _batteryAnimationController = AnimationController(
@@ -47,6 +51,10 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         vsync: this, duration: const Duration(milliseconds: 1500));
     _carShiftAnimation = CurvedAnimation(
         parent: _tempController, curve: const Interval(0.2, 0.4));
+    _animationShowInfo =
+        CurvedAnimation(parent: _tempController, curve: Interval(0.45, 0.65));
+    _animationCoolGlow =
+        CurvedAnimation(parent: _tempController, curve: Interval(0.7, 1));
   }
 
   @override
@@ -189,63 +197,38 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
                     // Temp
 
-                    TemptBtn(
-                      svgSrc: 'assets/icons/coolShape.svg',
-                      title: 'Cool'.toUpperCase(),
-                      isActive: _controller.isCoolSelected,
-                      onPress: _controller.updateCooler,
+                    Positioned(
+                      top: 60 * (1 - _animationShowInfo.value),
+                      height: constrains.maxHeight,
+                      width: constrains.maxWidth,
+                      child: Opacity(
+                        opacity: _tempController.value,
+                        child: TempDetails(
+                          controller: _controller,
+                        ),
+                      ),
                     ),
+                    Positioned(
+                      right: -180 * (1 - _animationCoolGlow.value),
+                      width: 200,
+                      child: AnimatedSwitcher(
+                        duration: defaultDuration,
+                        child: _controller.isCoolSelected
+                            ? Image.asset(
+                                'assets/images/Cool_glow_2.png',
+                                width: 200,
+                              )
+                            : Image.asset(
+                                'assets/images/Hot_glow_4.png',
+                                width: 200,
+                              ),
+                      ),
+                    )
                   ],
                 );
               }),
             ),
           );
         });
-  }
-}
-
-class TemptBtn extends StatelessWidget {
-  const TemptBtn({
-    Key? key,
-    required this.svgSrc,
-    required this.title,
-    required this.isActive,
-    required this.onPress,
-  }) : super(key: key);
-
-  final String svgSrc;
-  final String title;
-  final bool isActive;
-  final VoidCallback onPress;
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onPress,
-      onDoubleTap: onPress,
-      child: Column(
-        children: [
-          Container(
-            decoration: const BoxDecoration(),
-            height: isActive ? 76 : 50,
-            width: isActive ? 76 : 50,
-            child: SvgPicture.asset(
-              svgSrc,
-              color: isActive ? primaryColor : Colors.white38,
-            ),
-          ),
-          const SizedBox(
-            height: defaultPadding / 2,
-          ),
-          Text(
-            title,
-            style: TextStyle(
-                fontSize: 16,
-                color: isActive ? primaryColor : Colors.white38,
-                fontWeight: isActive ? FontWeight.bold : FontWeight.normal),
-          ),
-        ],
-      ),
-    );
   }
 }

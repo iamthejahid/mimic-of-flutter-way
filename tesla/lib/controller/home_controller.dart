@@ -39,8 +39,4 @@ class HomeController extends ChangeNotifier {
     isCoolSelected = !isCoolSelected;
     notifyListeners();
   }
-
-  bool isTherms = true;
-
-  void thermUpdate() => {isTherms = !isTherms, notifyListeners()};
 }
