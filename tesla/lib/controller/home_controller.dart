@@ -35,15 +35,12 @@ class HomeController extends ChangeNotifier {
 
   bool isCoolSelected = true;
 
-  void updateCooler(
-
-  ) => {isCoolSelected = !isCoolSelected, print('pp'),notifyListeners()};
-
-
+  void updateCooler() {
+    isCoolSelected = !isCoolSelected;
+    notifyListeners();
+  }
 
   bool isTherms = true;
 
   void thermUpdate() => {isTherms = !isTherms, notifyListeners()};
-
-
 }

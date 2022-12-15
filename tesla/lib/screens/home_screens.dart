@@ -193,7 +193,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                       svgSrc: 'assets/icons/coolShape.svg',
                       title: 'Cool'.toUpperCase(),
                       isActive: _controller.isCoolSelected,
-                      onPress: _controller.thermUpdate,
+                      onPress: _controller.updateCooler,
                     ),
                   ],
                 );
@@ -222,9 +222,11 @@ class TemptBtn extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: onPress,
+      onDoubleTap: onPress,
       child: Column(
         children: [
           Container(
+            decoration: const BoxDecoration(),
             height: isActive ? 76 : 50,
             width: isActive ? 76 : 50,
             child: SvgPicture.asset(
